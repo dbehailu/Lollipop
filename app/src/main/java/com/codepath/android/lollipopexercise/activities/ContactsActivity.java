@@ -1,11 +1,14 @@
 package com.codepath.android.lollipopexercise.activities;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import com.codepath.android.lollipopexercise.R;
 import com.codepath.android.lollipopexercise.adapters.ContactsAdapter;
@@ -18,6 +21,7 @@ public class ContactsActivity extends AppCompatActivity {
     private RecyclerView rvContacts;
     private ContactsAdapter mAdapter;
     private List<Contact> contacts;
+    private Button add;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +30,8 @@ public class ContactsActivity extends AppCompatActivity {
 
         // Find RecyclerView and bind to adapter
         rvContacts = (RecyclerView) findViewById(R.id.rvContacts);
+
+
 
         // allows for optimizations
         rvContacts.setHasFixedSize(true);
@@ -45,6 +51,10 @@ public class ContactsActivity extends AppCompatActivity {
 
         // Bind adapter to list
         rvContacts.setAdapter(mAdapter);
+
+//        add.setOnClickListener();
+//        mAdapter.notifyItemInserted(0);
+
     }
 
     @Override
@@ -60,7 +70,25 @@ public class ContactsActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        if(id==R.id.add_button) {
+            Contact contact = Contact.getRandomContact(this);
+            contacts.add(0, contact);
+            mAdapter.notifyItemInserted(0);
+            rvContacts.scrollToPosition(0);
+
+            Snackbar.make(rvContacts, "WOO", Snackbar.LENGTH_LONG)
+                    .setAction("UNDO", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            contacts.remove(0);
+                            mAdapter.notifyItemRemoved(0);
+                        }
+                    })
+                    .show();
+        }
+
 
         return super.onOptionsItemSelected(item);
     }
+
 }
